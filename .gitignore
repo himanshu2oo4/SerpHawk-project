@@ -48,3 +48,4 @@ k8s/backend-secret.yaml
 terraform.tfstate
 terraform.tfstate.** 
 tfplan 
+backend-secret.yaml
