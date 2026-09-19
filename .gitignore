@@ -43,7 +43,7 @@ health.json
 tmp_check_version.py
 test_*.py
 *.pyc
-k8s/backend-secret.yml
+k8s/backend-secret.yaml
 .terraform**
 terraform.tfstate
 terraform.tfstate.** 
