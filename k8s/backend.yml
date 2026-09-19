@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: serphawk-backend
+  namespace: serphawk
+  labels:
+    app: serphawk-backend
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: serphawk-backend
+
+  template:
+    metadata:
+      labels:
+        app: serphawk-backend
+
+    spec:
+      containers:
+        - name: backend
+          image: 815802019107.dkr.ecr.ap-south-1.amazonaws.com/serphawk-backend:latest
+
+          ports:
+            - containerPort: 8000
+
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: serphawk-backend-secret
+                  key: DATABASE_URL
+
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          livenessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 20
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  namespace: serphawk
+spec:
+  type: LoadBalancer
+
+  selector:
+    app: serphawk-backend
+
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000

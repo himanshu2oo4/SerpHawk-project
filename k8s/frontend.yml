@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: serphawk-frontend
+  namespace: serphawk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: serphawk-frontend
+  template:
+    metadata:
+      labels:
+        app: serphawk-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: 815802019107.dkr.ecr.ap-south-1.amazonaws.com/serphawk-frontend:eks
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: serphawk
+spec:
+  type: LoadBalancer
+  selector:
+    app: serphawk-frontend
+  ports:
+    - port: 3000
+      targetPort: 3000
